@@ -1,0 +1,475 @@
+"""""""""""""""""""""""""""""""""""""""
+"User: Yingkai Zheng
+"Last Change: 2014/03/28
+""""""""""""""""""""""""""""""""""""""""
+
+""""""""""""""""""""""""""""""""""""""""
+"General Setting
+""""""""""""""""""""""""""""""""""""""""
+" Use dotvim, place following configuration in ~/.vimrc.after
+colorscheme default
+
+"set encoding =utf-8
+try
+    lang en_US
+catch
+endtry
+
+"Shell script
+autocmd FileType sh setlocal sw=4 | setlocal sta
+
+let g:mapleader =","
+
+"Don't highlight current line
+set nocursorline
+
+"set ignorecase
+set smartcase
+
+"Set magic on, display bracets matching status
+set magic
+
+"Don't redraw while executing macros
+set nolazyredraw
+
+"No sound on errors
+set noerrorbells
+set novisualbell
+"set t_vb=   "blank terminal code of error code
+autocmd! GUIEnter * set vb t_vb=
+
+syntax match Trail " +$"
+highlight def link Trail Todo
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Spell checking
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Pressing ,sc will toggle and untoggle spell checking
+map <leader>sc :setlocal spell!<cr>
+
+""""""""""""""""""""""""""""""
+" => Python section
+""""""""""""""""""""""""""""""
+let python_highlight_all = 1
+let g:pep8_map='<leader>8'
+
+au FileType python syn keyword pythonDecorator True None False self
+
+au BufNewFile,BufRead *.jinja set syntax=htmljinja
+au BufNewFile,BufRead *.mako set ft=mako
+
+au FileType python inoremap <buffer> $r return
+au FileType python inoremap <buffer> $i import
+au FileType python inoremap <buffer> $p print
+au FileType python inoremap <buffer> $f #--- PH ----------------------------------------------<esc>FP2xi
+au FileType python map <buffer> <leader>1 /class
+au FileType python map <buffer> <leader>2 /def
+au FileType python map <buffer> <leader>C ?class
+au FileType python map <buffer> <leader>D ?def
+
+if !has("autocmd")
+    filetype plugin indent on
+    autocmd FileType python setlocal et | setlocal sta | setlocal sw=4
+    autocmd FileType python compiler pyunit
+    autocmd FileType python setlocal makeprg=python\ ./alltests.py
+    autocmd BufNewFile,BufRead test*.py setlocal makeprg=python\ %
+
+    autocmd BufNewFile test*.py 0r ~/.vim/skeleton/test.py
+    autocmd BufNewFile alltests.py 0r ~/.vim/skeleton/alltests.py
+    autocmd BufNewFile *.py 0r ~/.vim/skeleton/skeleton.py
+endif
+
+if has("autocmd")
+      autocmd FileType python set complete+=k~/.vim/tools/pydiction
+endif
+
+"pydiction
+"let g:pydiction_location = 'D:\Program Files\Vim\vimfiles\ftplugin\pydiction\complete-dict'
+let g:pydiction_menu_height = 15
+
+""""""""""""""""""""""""""""""
+" => JavaScript section
+"""""""""""""""""""""""""""""""
+au FileType javascript call JavaScriptFold()
+au FileType javascript setl fen
+au FileType javascript setl nocindent
+
+au FileType javascript imap <c-t> AJS.log();<esc>hi
+au FileType javascript imap <c-a> alert();<esc>hi
+
+au FileType javascript inoremap <buffer> $r return
+au FileType javascript inoremap <buffer> $f //--- PH ----------------------------------------------<esc>FP2xi
+
+function! JavaScriptFold()
+    setl foldmethod=syntax
+    setl foldlevelstart=1
+    syn region foldBraces start=/{/ end=/}/ transparent fold keepend extend
+
+    function! FoldText()
+    return substitute(getline(v:foldstart), '{.*', '{...}', '')
+    endfunction
+    setl foldtext=FoldText()
+endfunction
+
+""""""""""""""""""""""""""""""""""""""""
+"Status line
+""""""""""""""""""""""""""""""""""""""""
+"Always hide the statusline
+set laststatus=2
+
+function! CurDir()
+	let curdir =substitute(getcwd(), '/home/yingkai/', "~/", "g")
+	return curdir
+endfunction
+
+"Format the statusline
+set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
+"set statusline=\ %F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %1/%L:%c
+
+function! HasPaste()
+    if &paste
+        return 'PASTE MODE  '
+    else
+        return ''
+    endif
+endfunction
+
+""""""""""""""""""""""""""""""""""""
+"Visual
+""""""""""""""""""""""""""""""""""""
+function! CmdLine(str)
+    exe "menu Foo.Bar :" . a:str
+    emenu Foo.Bar
+    unmenu Foo
+endfunction
+
+"From an idea by Michael Naumann
+function! VisualSearch(direction) range
+	let l:saved_reg =@"
+	execute "normal! vgvy"
+	let l:pattern =escape(@", '\\/.*$^~[]')
+	let l:pattern =substitute(l:pattern, "\n$", "", "")
+
+    if a:direction == 'b'
+        execute "normal ?" . l:pattern . "^M"
+    elseif a:direction == 'gv'
+        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
+    elseif a:direction == 'f'
+        execute "normal /" . l:pattern . "^M"
+    endif
+
+	let @/ =l:pattern
+	let @" =l:saved_reg
+endfunction
+
+"Basically you press * or # to search for the current selection !! Really
+"useful
+vnoremap <silent> * :call VisualSearch('f')<CR>
+vnoremap <silent> # :call VisualSearch('b')<CR>
+
+" When you press gv you vimgrep after the selected text
+vnoremap <silent> gv :call VisualSearch('gv')<CR>
+map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
+
+"Smart way to move btw. windows
+nmap <C-j> <C-W>j
+nmap <C-k> <C-W>k
+nmap <C-h> <C-W>h
+nmap <C-l> <C-W>l
+
+"Actually, the tab does not switch buffers, but my arrows Bclose function can be found in "Buffer related" section
+map <leader>bd :Bclose<cr>
+
+"Moving fast to front, back and 2 sides ;)
+imap <m-$> <esc>$a
+imap <m-0> <esc>0i
+
+"Switch to current dir
+map <silent> <leader>cd :cd %:p:h<cr>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Parenthesis/bracket expanding
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+vnoremap @1 <esc>`>a)<esc>`<i(<esc>
+")
+vnoremap @2 <esc>`>a]<esc>`<i[<esc>
+vnoremap @3 <esc>`>a}<esc>`<i{<esc>
+vnoremap @$ <esc>`>a"<esc>`<i"<esc>
+vnoremap @q <esc>`>a'<esc>`<i'<esc>
+vnoremap @w <esc>`>a"<esc>`<i"<esc>
+
+"Map auto complete of (, ", ', [
+inoremap @1 ()<esc>:let leavechar=")"<cr>i
+inoremap @2 []<esc>:let leavechar="]"<cr>i
+inoremap @3 {}<esc>:let leavechar="}"<cr>i
+inoremap @4 {<esc>o}<esc>:let leavechar="}"<cr>O
+inoremap @q ''<esc>:let leavechar="'"<cr>i
+inoremap @w ""<esc>:let leavechar='"'<cr>i
+"au BufNewFile,BufRead *.\(vim\)\@! inoremap " ""<esc>:let leavechar='"'<cr>i
+"au BufNewFile,BufRead *.\(txt\)\@! inoremap ' ''<esc>:let leavechar="'"<cr>i
+
+"imap <m-l> <esc>:exec "normal f" . leavechar<cr>a
+"imap <d-l> <esc>:exec "normal f" . leavechar<cr>a
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" General Abbrevs
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"My information
+"iab xdate <c-r>=strftime("%c")<cr>
+iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
+iab xname Yingkai Zheng
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Editing mappings etc.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+func! DeleteTrailingWS()
+    exe "normal mz"
+    %s/\s\+$//ge
+    nohl
+    exe "normal `z"
+endfunc
+
+"do not automaticlly remove trailing whitespace
+autocmd BufWrite *.py :call DeleteTrailingWS()
+"autocmd BufWrite *.[ch] :call DeleteTrailingWS()
+"autocmd BufWrite *.txt :call DeleteTrailingWS()
+"nmap <silent> <leader>ws :call DeleteTrailingWS()<cr>:w<cr>
+"nmap <silent> <leader>ws! :call DeleteTrailingWS()<cr>:w!<cr>
+
+"set guitablabel=%t
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Command-line config
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Bash like
+cnoremap <C-A>    <Home>
+cnoremap <C-E>    <End>
+cnoremap <C-K>    <C-U>
+
+"Restore cursor to file position in previous editing session
+set viminfo='10,\"100,:20,n~/.viminfo
+au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
+
+"Don't close window, when deleting a buffer
+command! Bclose call <SID>BufcloseCloseIt()
+
+function! <SID>BufcloseCloseIt()
+    let l:currentBufNum =bufnr("%")
+    let l:alternateBufNum =bufnr("#")
+
+    if buflisted(l:alternateBufNum)
+        buffer #
+    else
+        bnext
+    endif
+
+    if bufnr("%") == l:currentBufNum
+        new
+    endif
+
+    if buflisted(l:currentBufNum)
+        execute("bdelete! ".l:currentBufNum)
+    endif
+endfunction
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Session options
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set sessionoptions-=curdir
+set sessionoptions+=sesdir
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Folding
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Enable folding, I find it very useful
+"set fen
+"set fdl=0
+nmap <silent> <leader>zo zO
+vmap <silent> <leader>zo zO
+
+"mapping
+inoremap <C-]>             <C-X><C-]>
+inoremap <C-F>             <C-X><C-F>
+inoremap <C-D>             <C-X><C-D>
+inoremap <C-L>             <C-X><C-L>
+
+map <leader>pw :Pydoc<CR>
+
+nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+""""""""""""""""""""""""""""""
+" file explorer setting
+""""""""""""""""""""""""""""""
+"Split vertically
+let g:explVertical=1
+
+"Window size
+let g:explWinSize=35
+let g:explSplitLeft=1
+let g:explSplitBelow=1
+
+"Hide some files
+let g:explHideFiles='^\.,.*\.class$,.*\.swp$,.*\.pyc$,.*\.swo$,\.DS_Store$'
+
+"Hide the help thing..
+let g:explDetailedHelp=0
+
+autocmd BufRead,BufNewFile *.py syntax on
+autocmd BufRead,BufNewFile *.py set ai
+
+""""""""""""""""""""""""""""""
+" C/C++
+"""""""""""""""""""""""""""""""
+autocmd FileType c,cpp  map <buffer> <leader><space> :make<cr>
+autocmd FileType c,cpp  setl foldmethod=syntax | setl fen
+
+"Remove the Windows ^M
+noremap <Leader>dm mmHmn:%s/<C-V><cr>//ge<cr>'nzt'm
+
+set foldexpr=PythonFoldExpr(v:lnum)
+set foldtext=PythonFoldText()
+
+function! ToggleFold()
+    if( b:folded == 0 )
+        exec "normal! zM"
+        let b:folded = 1
+    else
+        exec "normal! zR"
+        let b:folded = 0
+    endif
+endfunction
+
+function! PythonFoldText()
+    let size = 1 + v:foldend - v:foldstart
+    if size < 10
+        let size = " " . size
+    endif
+    if size < 100
+        let size = " " . size
+    endif
+    if size < 1000
+        let size = " " . size
+    endif
+
+    if match(getline(v:foldstart), '"""') >= 0
+        let text = substitute(getline(v:foldstart), '"""', '', 'g' ) . ' '
+    elseif match(getline(v:foldstart), "'''") >= 0
+        let text = substitute(getline(v:foldstart), "'''", '', 'g' ) . ' '
+    else
+        let text = getline(v:foldstart)
+    endif
+
+    return size . ' lines:'. text . ' '
+endfunction
+
+function! PythonFoldExpr(lnum)
+    if indent( nextnonblank(a:lnum) ) == 0
+        return 0
+    endif
+
+    if getline(a:lnum-1) =~ '^\(class\|def\)\s'
+        return 1
+    endif
+
+    if getline(a:lnum) =~ '^\s*$'
+        return "="
+    endif
+
+    if indent(a:lnum) == 0
+        return 0
+    endif
+
+    return '='
+endfunction
+
+"search word in whole page
+:vmap <silent> <leader>f y/<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
+:vmap <silent> <leader>F y?<C-R>=escape(@", '\\/.*$^~[]')<CR><CR>
+
+"remove all blank at line end
+nmap <F12> :%s/[ \t\r]\+$//g<CR>
+
+"Buffers shortcut
+nmap <S-L> :bnext<CR>
+nmap <S-H> :bprevious<CR>
+
+"move cursor in insert mode
+imap <c-l> <esc>la
+imap <c-h> <esc>ha
+
+"Switch window
+nmap <C-h> <C-w>h
+nmap <C-j> <C-w>j
+nmap <C-k> <C-w>k
+nmap <C-l> <C-w>l
+
+"support windows full screen
+if !has('unix')
+    function! ToggleFullScreen()
+        let s:IsFullScreen=libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 27 + 29*256 + 30*256*256)
+    endfunction
+    map <F1> <Esc>:call ToggleFullScreen()<CR>
+endif
+
+"Grammar mapping
+nmap <leader>1 :set filetype=xhtml<CR>
+nmap <leader>2 :set filetype=css<CR>
+nmap <leader>3 :set filetype=javascript<CR>
+nmap <leader>4 :set filetype=php<CR>
+
+"""""""""""""""""""""""""""""""""""""""""
+"Source Explorer
+""""""""""""""""""""""""""""""""""""""""
+""""""""""""Source Explorer""""""""""""
+" The switch of the Source Explorer
+nmap <F8> :SrcExplToggle<CR>
+
+" Set the height of Source Explorer window
+let g:SrcExpl_winHeight = 8
+
+" Set 100 ms for refreshing the Source Explorer
+let g:SrcExpl_refreshTime = 100
+
+" Set "Enter" key to jump into the exact definition context
+let g:SrcExpl_jumpKey = "<ENTER>"
+
+" Set "Space" key for back from the definition context
+let g:SrcExpl_gobackKey = "<SPACE>"
+
+" In order to avoid conflicts, the Source Explorer should know what
+" plugins except itself are using buffers. And you need add their buffer names
+" into below listaccording to the command :buffers!"
+let g:SrcExpl_pluginList = [
+            \ "__Tag_List__",
+            \ "_NERD_tree_"
+     \ ]
+
+" Enable/Disable the local definition searching, and note that this is not
+" guaranteed to work, the Source Explorer doesn't check the syntax for now.
+" It only searches for a match with the keyword according to command 'gd'
+let g:SrcExpl_searchLocalDef = 1
+
+" Do not let the Source Explorer update the tags file when opening
+let g:SrcExpl_isUpdateTags = 0
+
+" Use 'Exuberant Ctags' with '--sort=foldcase -R .' or '-L cscope.files' to
+" create/update the tags file
+let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
+
+" Set "<F12>" key for updating the tags file artificially
+let g:SrcExpl_updateTagsKey = "<F12>"
+
+" Set "<F3>" key for displaying the previous definition in the jump list
+let g:SrcExpl_prevDefKey = "<F3>"
+
+" Set "<F4>" key for displaying the next definition in the jump list
+let g:SrcExpl_nextDefKey = "<F4>"

@@ -1,0 +1,2 @@
+" Set the system ctags instead of xcode version used by gui
+let Tlist_Ctags_Cmd='/usr/local/bin/ctags'
