@@ -310,7 +310,7 @@ nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 " file explorer setting
 """"""""""""""""""""""""""""""
 "Split vertically
-let g:explVertical=1
+"let g:explVertical=1
 
 "Window size
 let g:explWinSize=35
@@ -402,16 +402,6 @@ nmap <F12> :%s/[ \t\r]\+$//g<CR>
 nmap <S-L> :bnext<CR>
 nmap <S-H> :bprevious<CR>
 
-"move cursor in insert mode
-imap <c-l> <esc>la
-imap <c-h> <esc>ha
-
-"Switch window
-nmap <C-h> <C-w>h
-nmap <C-j> <C-w>j
-nmap <C-k> <C-w>k
-nmap <C-l> <C-w>l
-
 "support windows full screen
 if !has('unix')
     function! ToggleFullScreen()
@@ -419,12 +409,6 @@ if !has('unix')
     endfunction
     map <F1> <Esc>:call ToggleFullScreen()<CR>
 endif
-
-"Grammar mapping
-nmap <leader>1 :set filetype=xhtml<CR>
-nmap <leader>2 :set filetype=css<CR>
-nmap <leader>3 :set filetype=javascript<CR>
-nmap <leader>4 :set filetype=php<CR>
 
 """""""""""""""""""""""""""""""""""""""""
 "Source Explorer
