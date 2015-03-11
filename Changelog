@@ -1,3 +1,11 @@
+* unreleased
+  - vim-i18n plugin for extracting i18n strings into .yml files
+  - syntax support: mustashe-handlebars, literate coffeescript and React cjsx
+  - upgraded clojure syntax support
+  - vim plugin for emmet.io HTML/CSS workflow
+  - improved ctrlP ignore list to skip image files
+  - editorconfig.org file support
+
 * 2014-11-25
   - fix a deprecation warning by the latest NeoBundle version.
 
