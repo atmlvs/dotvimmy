@@ -152,11 +152,3 @@ call neobundle#end()
 
 filetype plugin indent on
 
-<<<<<<< HEAD
-Bundle 'Shougo/vimproc'
-Bundle 'Shougo/unite.vim'
-Bundle 'Shougo/unite-outline'
-Bundle 'ujihisa/unite-colorscheme'
-Bundle 'wesleyche/SrcExpl'
-=======
->>>>>>> 3b5bea05c25fcb3fa6bb2a9c494be91538e3e773

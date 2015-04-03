@@ -8,6 +8,7 @@
 """"""""""""""""""""""""""""""""""""""""
 " Use dotvim, place following configuration in ~/.vimrc.after
 colorscheme default
+cd ~/Projects/
 
 "set encoding =utf-8
 try
@@ -54,9 +55,6 @@ let python_highlight_all = 1
 let g:pep8_map='<leader>8'
 
 au FileType python syn keyword pythonDecorator True None False self
-
-au BufNewFile,BufRead *.jinja set syntax=htmljinja
-au BufNewFile,BufRead *.mako set ft=mako
 
 au FileType python inoremap <buffer> $r return
 au FileType python inoremap <buffer> $i import
@@ -413,7 +411,6 @@ endif
 """""""""""""""""""""""""""""""""""""""""
 "Source Explorer
 """"""""""""""""""""""""""""""""""""""""
-""""""""""""Source Explorer""""""""""""
 " The switch of the Source Explorer
 nmap <F8> :SrcExplToggle<CR>
 
@@ -424,17 +421,19 @@ let g:SrcExpl_winHeight = 8
 let g:SrcExpl_refreshTime = 100
 
 " Set "Enter" key to jump into the exact definition context
-let g:SrcExpl_jumpKey = "<ENTER>"
+let g:SrcExpl_jumpKey = "<Enter>"
 
 " Set "Space" key for back from the definition context
-let g:SrcExpl_gobackKey = "<SPACE>"
+let g:SrcExpl_gobackKey = "<F7>"
 
 " In order to avoid conflicts, the Source Explorer should know what
 " plugins except itself are using buffers. And you need add their buffer names
 " into below listaccording to the command :buffers!"
 let g:SrcExpl_pluginList = [
             \ "__Tag_List__",
-            \ "_NERD_tree_"
+            \ "NERD_tree_1",
+            \ "MiniBufExplorer",
+            \ "Source_Explorer"
      \ ]
 
 " Enable/Disable the local definition searching, and note that this is not
@@ -450,10 +449,18 @@ let g:SrcExpl_isUpdateTags = 0
 let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
 
 " Set "<F12>" key for updating the tags file artificially
-let g:SrcExpl_updateTagsKey = "<F12>"
+let g:SrcExpl_updateTagsKey = "<F10>"
 
 " Set "<F3>" key for displaying the previous definition in the jump list
 let g:SrcExpl_prevDefKey = "<F3>"
 
 " Set "<F4>" key for displaying the next definition in the jump list
 let g:SrcExpl_nextDefKey = "<F4>"
+
+"""""""""""""""""""""""""""""""""""""""""
+"Taglist settings
+""""""""""""""""""""""""""""""""""""""""
+let Tlist_Show_One_File =1
+let Tlist_Exit_OnlyWindow =1
+let Tlist_Use_Right_Window =1
+let Tlist_WinHeight =15
