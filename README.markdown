@@ -92,7 +92,7 @@ announcements of new versions, tips, etc.
 
 From your homedirectory (on Linux/Mac OSX):
 
-* `git clone git://github.com/astrails/dotvim.git`
+* `git clone https://github.com/astrails/dotvim.git # or git@github.com:astrails/dotvim.git for ssh`
 * `ln -sfn dotvim .vim`
 * `ln -sfn dotvim/vimrc .vimrc`
 * `cd .vim; make install`
@@ -171,6 +171,11 @@ files. There are several override files supported by dotvim.
 They are loaded in the following order:
 
 * base dotvim configuration (global, plugin configurations, bindings, macros)
+* `~/.vimrc.bundles`
+
+  Loads additional bundles inside the `neobundle#begin/end` block.
+  Should contain lines like `NeoBundle 'my-custom/bundle'`
+
 * `~/.local-before.vim` _[deprecated]_
 * `~/.vimrc.before`
 
@@ -848,6 +853,14 @@ used intependently.
 
     rainbow_parentheses can be useful to other languages as well ;)
 
+<<<<<<< HEAD
+=======
+*   [Rust](http://www.rust-lang.org) support.
+
+    using files from [rust repository](https://github.com/rust-lang/rust)
+
+
+>>>>>>> 1205a430d7ba0e7d86033f6c3e0a4cae800aaa47
 [top](#top)
 
 <a name=minor>

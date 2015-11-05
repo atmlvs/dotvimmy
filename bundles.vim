@@ -53,7 +53,7 @@ NeoBundle 'Raimondi/delimitMate'
 " calendar, duh!
 NeoBundle 'calendar.vim--Matsumoto'
 " A Narrow Region Plugin (similar to Emacs)
-NeoBundle 'chrisbra/NrrwRgn'
+"NeoBundle 'chrisbra/NrrwRgn'
 " url based hyperlinks for text files
 NeoBundle 'utl.vim'
 " A clone of Emacs' Org-mode for Vim
@@ -116,7 +116,14 @@ NeoBundle 'ekalinin/Dockerfile.vim'
 NeoBundle 'groenewege/vim-less'
 NeoBundle 'mustache/vim-mustache-handlebars'
 NeoBundle 'mtscout6/vim-cjsx'
+<<<<<<< HEAD
 NeoBundle 'mintplant/vim-literate-coffeescript'
+=======
+NeoBundle 'vitaly/vim-literate-coffeescript'
+NeoBundle 'rust-lang/rust', {'rtp': 'src/etc/vim/'}
+NeoBundle 'pangloss/vim-javascript'
+NeoBundle 'mxw/vim-jsx'
+>>>>>>> 1205a430d7ba0e7d86033f6c3e0a4cae800aaa47
 
 " clojure
 "NeoBundle 'VimClojure'
@@ -143,10 +150,22 @@ NeoBundle 'mattn/webapi-vim'
 "NeoBundle 'tpope/vim-unimpaired'
 "NeoBundle 'reinh/vim-makegreen'
 
-NeoBundle 'Shougo/vimproc'
+NeoBundle 'Shougo/vimproc.vim', {
+\ 'build' : {
+\     'windows' : 'tools\\update-dll-mingw',
+\     'cygwin' : 'make -f make_cygwin.mak',
+\     'mac' : 'make -f make_mac.mak',
+\     'linux' : 'make',
+\     'unix' : 'gmake',
+\    },
+\ }
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/unite-outline'
 NeoBundle 'ujihisa/unite-colorscheme'
+
+if filereadable(expand("~/.vimrc.bundles"))
+  source ~/.vimrc.bundles
+endif
 
 call neobundle#end()
 
