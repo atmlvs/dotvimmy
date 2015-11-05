@@ -7,14 +7,17 @@
 "General Setting
 """"""""""""""""""""""""""""""""""""""""
 " Use dotvim, place following configuration in ~/.vimrc.after
-colorscheme default
-cd ~/Projects/
+colorscheme desert_my
+cd ~/projects/
 
 "set encoding =utf-8
 try
     lang en_US
 catch
 endtry
+
+let g:airline_powerline_fonts = 0
+let g:Powerline_symbols = 'fancy'
 
 "Shell script
 autocmd FileType sh setlocal sw=4 | setlocal sta
@@ -121,7 +124,7 @@ function! CurDir()
 endfunction
 
 "Format the statusline
-set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
+"set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
 "set statusline=\ %F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %1/%L:%c
 
 function! HasPaste()
